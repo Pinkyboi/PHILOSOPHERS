@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/01 12:05:37 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/10/01 16:53:19 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/10/03 12:47:31 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ int is_digit(char c)
     return (c >= '0' && c <= '9');
 }
 
-int ft_atoi(char* str)
+long ft_atoil(char* str)
 {
     int i;
-    int number;
+    long number;
     int sign;
 
     i = 0;
