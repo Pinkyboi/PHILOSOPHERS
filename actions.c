@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/03 14:54:43 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/10/03 18:58:28 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/10/04 18:50:54 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,48 @@
 
 void    print_action_message(int philo_id, const char* message)
 {
-    struct timeval  tv;
-    
-    gettimeofday(&tv, NULL);
+    long    event_time;
+
+    event_time = get_current_time() - master->execution_time;
     pthread_mutex_lock(&master->output_mutex);
-    if (master->first_blood != -1)
-    {
-        printf("%ld %d\t%s\n",
-            get_milliseconds(tv.tv_sec, tv.tv_usec), master->first_blood, "died");
+    printf("%ld philosopher id: %d\t%s\n", event_time, philo_id + 1, message);
+    if(!strcmp(message, "died"))
         exit(0);
-    }
-    printf("%ld %d\t%s\n", get_milliseconds(tv.tv_sec, tv.tv_usec), philo_id, message);
     pthread_mutex_unlock(&master->output_mutex);
 }
 
 void    philo_sleep(t_philosopher *philo)
 {
     if (get_current_time() + philo->game_rules.time_to_sleep > philo->dying_time)
-        master->first_blood = philo->id;
+        print_action_message(philo->id, "died");
     print_action_message(philo->id, "is sleeping");
     usleep(philo->game_rules.time_to_sleep * 1000);
 }
 
-void     lock_forks(t_philosopher *philo)
+int     get_smaller_fork(int philo_id)
 {
-    pthread_mutex_lock(&master->forks[philo->id]);
-    pthread_mutex_lock(&master->forks[(philo->id + 1) % master->game_rules.philo_number]);
-    print_action_message(philo->id, "is eating");
-    usleep(philo->game_rules.time_to_eat * 1000);
-    philo->dying_time += philo->game_rules.time_to_die;
-    pthread_mutex_unlock(&master->forks[(philo->id + 1) % master->game_rules.philo_number]);
-    pthread_mutex_unlock(&master->forks[philo->id]);
+    return MIN(philo_id , (philo_id + 1) % master->game_rules.philo_number);
 }
 
-void    unlock_forks(t_philosopher *philo)
+int     get_bigger_fork(int philo_id)
 {
-    pthread_mutex_unlock(&master->forks[philo->id]);
-    pthread_mutex_unlock(&master->forks[(philo->id + 1) % master->game_rules.philo_number]);
+    return MAX(philo_id , (philo_id + 1) % master->game_rules.philo_number);
+}
+
+void     lock_forks(t_philosopher *philo)
+{
+    pthread_mutex_lock(&master->forks[get_smaller_fork(philo->id)]);
+    if (!pthread_mutex_lock(&master->forks[get_bigger_fork(philo->id)]))
+    {
+        print_action_message(philo->id, "is eating");
+        usleep(philo->game_rules.time_to_eat * 1000);
+        philo->dying_time += philo->game_rules.time_to_die;
+        philo->meal_number += 1;
+        if (philo->meal_number == master->game_rules.number_of_times_eat)
+            master->full_counter += 1;
+        pthread_mutex_unlock(&master->forks[get_bigger_fork(philo->id)]);
+    }
+    pthread_mutex_unlock(&master->forks[get_smaller_fork(philo->id)]);
 }
 
 void    philo_eat(t_philosopher* philo)
@@ -58,24 +63,14 @@ void    philo_eat(t_philosopher* philo)
     int     id;
 
     id = philo->id;
-    
     if (get_current_time() + philo->game_rules.time_to_eat > philo->dying_time)
-        master->first_blood = philo->id;
-    if (philo->id != (philo->id + 1) % master->game_rules.philo_number)
-        lock_forks(philo);
-    // if (lock_forks(philo))
-//     {
-//         print_action_message(id, "is eating");
-//         usleep(philo->game_rules.time_to_eat);
-//         philo->dying_time += philo->game_rules.time_to_die;
-//         unlock_forks(philo);
-//     }
-// }
+        print_action_message(philo->id, "died");
+    lock_forks(philo);
 }
 void    philo_think(t_philosopher *philo)
 {
     if (get_current_time() > philo->dying_time)
-        master->first_blood = philo->id;
+        print_action_message(philo->id, "died");
     print_action_message(philo->id, "is thinking");
 }
 
