@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/01 11:52:43 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/10/04 18:49:57 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/10/05 17:46:19 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,25 @@
 #include <limits.h>
 #include <string.h>
 
-#define MAX(x, y) (((x) > (y)) ? (x) : (y))
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
-
 typedef struct      s_rules
 {
-    long             philo_number;
-    long             time_to_die;
-    long             time_to_eat;
-    long             time_to_sleep;
-    long             number_of_times_eat;
+    int             philo_number;
+    int             time_to_die;
+    int             time_to_eat;
+    int             time_to_sleep;
+    int             time_to_eat_us;
+    int             time_to_sleep_us;
+    int             number_of_times_eat;
 }                   t_rules;
 
 typedef struct      s_philosopher
 {
     t_rules         game_rules;
-    long            id;
-    long            last_meal;
-    long            dying_time;
-    long            meal_number;
     pthread_t       tid;
+    int             id;
+    int             last_meal;
+    int             dying_time;
+    int             meal_number;
 }                   t_philosopher;
 
 
@@ -49,16 +48,16 @@ typedef struct      s_ochestrator
     t_rules         game_rules;
     t_philosopher   *philo_list;
     int             first_blood;
-    long            execution_time;
+    int             full_counter;
+    int             execution_time;
     pthread_mutex_t *forks;
     pthread_mutex_t output_mutex;
-    pthread_mutex_t death;
-    int             full_counter;
 }                   t_orchestrator;
 
 t_orchestrator      *master;
 
-long            ft_atoil(char* str);
+long            ft_atoi(char* str);
+int             ft_strcmp(const char *s1, const char *s2);
 long            get_milliseconds(unsigned int seconds, unsigned int microseconds);
 int             get_current_time(void);
 void            print_action_message(int philo_id, const char* message);
@@ -69,5 +68,6 @@ int             forks_status(int id);
 void*           callback(void *arg);
 void            threads_master(t_orchestrator *orch);
 void            init_philosophers(t_orchestrator *master);
-void            init_orchestrator(char** args, int argc);
+void            init_master(char** args, int argc);
 void            init_mutexs();
+void            lock_forks(t_philosopher *philo);
