@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_msleep.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/01 11:51:45 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/10 15:02:54 by abenaiss         ###   ########.fr       */
+/*   Created: 2021/11/10 15:02:57 by abenaiss          #+#    #+#             */
+/*   Updated: 2021/11/12 20:03:50 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int main(int argc, char** argv)
+void    ft_msleep(unsigned int delay_second)
 {
-    env = (t_env *)malloc(sizeof(t_env));
-    if(argc != 5 && argc != 6)
+    long    start_time;
+
+    start_time = get_current_time();
+    while (get_current_time() <= start_time + delay_second)
     {
-        write(1, USAGE_MESSAGE, 105);
-        exit(-1);
+        if (env->terminate)
+            return ;
+        usleep(10);
     }
-    initialize_env(argc, argv);
-    setting_dinner();
 }

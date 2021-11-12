@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   print_message.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/05 17:42:28 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/10/05 17:42:31 by abenaiss         ###   ########.fr       */
+/*   Created: 2021/11/10 14:58:39 by abenaiss          #+#    #+#             */
+/*   Updated: 2021/11/12 15:58:21 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	unsigned char	*str1;
-	unsigned char	*str2;
+#include "philo.h"
 
-	str1 = (unsigned char*)s1;
-	str2 = (unsigned char*)s2;
-	while (*str1 || *str2)
-	{
-		if (*str1 != *str2)
-			return (*str1 - *str2);
-		str1++;
-		str2++;
-	}
-	return (0);
+void    print_action_message(int philo_id, const char* message)
+{
+    long    event_time;
+
+    pthread_mutex_lock(&env->print_mutex);
+    event_time = get_current_time() - env->start_time;
+    if(!env->terminate)
+        printf("[%ld ms] philosopher id: %d %s\n", event_time, philo_id + 1, message);
+    if(!env->terminate)
+        pthread_mutex_unlock(&env->print_mutex);
 }

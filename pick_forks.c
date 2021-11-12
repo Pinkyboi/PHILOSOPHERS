@@ -1,31 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time_management.c                                  :+:      :+:    :+:   */
+/*   pick_forks.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/01 14:58:36 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/01 16:49:28 by abenaiss         ###   ########.fr       */
+/*   Created: 2021/11/01 15:03:06 by abenaiss          #+#    #+#             */
+/*   Updated: 2021/11/12 18:37:01 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long    get_milliseconds(unsigned int seconds, unsigned int microseconds)
+int min(int number1, int number2)
 {
-    return (seconds * 1000 + microseconds / 1000);
+    if(number1 < number2)
+        return (number1);
+    return (number2);
 }
 
-long    get_seconds(unsigned int milliseconds)
+int max(int number1, int number2)
 {
-    return (milliseconds / 1000);
+    if(number1 > number2)
+        return (number1);
+    return (number2);
 }
 
-long     get_current_time(void)
+int     get_smaller_fork(int philo_id)
 {
-    struct timeval  tv;
+    return min(philo_id, (philo_id + 1) % env->params[philo_number]);
+}
 
-    gettimeofday(&tv, NULL);
-    return (get_milliseconds(tv.tv_sec, tv.tv_usec));
+int     get_bigger_fork(int philo_id)
+{
+    return max(philo_id, (philo_id + 1) % env->params[philo_number]);
 }
