@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 15:00:14 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/13 01:31:01 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/13 02:34:41 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,18 @@ static void*   philo_life_cycle(void* arg)
     return (NULL);
 }
 
+static void    clear_env(void)
+{
+    int i;
+
+    i = -1;
+    while(++i < env->params[philo_number])
+        pthread_mutex_destroy(&env->fork_list[i].fork_lock);
+    pthread_mutex_destroy(&env->print_mutex);
+    free(env->fork_list);
+    free(env->philo_list);
+}
+
 void    setting_dinner(void)
 {
     int i;
@@ -77,4 +89,5 @@ void    setting_dinner(void)
         pthread_join(env->philo_list[i].w_tid, NULL);
         pthread_join(env->philo_list[i].p_tid, NULL);
     }
+    clear_env();
 }

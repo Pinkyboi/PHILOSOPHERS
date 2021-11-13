@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:27:10 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/13 01:27:59 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/13 02:32:06 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ static void init_forks(void)
     env->fork_list = (t_fork*)malloc(sizeof(t_fork) * env->params[philo_number]);
 	while (++i < env->params[philo_number])
     {
-		pthread_mutex_init(&env->fork_list[i].fork_lock, NULL);
+        env->fork_list[i].fork_lock
+            = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;
         env->fork_list[i].users[curent_user] = -1;
         env->fork_list[i].users[past_user] = -1;
         env->fork_list[i].id = i;
@@ -51,8 +52,7 @@ void    initialize_env(int argc, char** argv)
     if (argc == 6)
         env->params[max_eat_count] = my_atoi(argv[5]);
     else
-        env->params[max_eat_count] = -1;    
-    env->fork_list = (t_fork*)malloc(sizeof(t_fork) * env->params[philo_number]);
+        env->params[max_eat_count] = -1;
     init_philosophers();
     init_forks();
 }
