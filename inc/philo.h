@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 11:34:29 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/12 20:03:36 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/13 01:39:46 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <sys/time.h>
-#include <sys/types.h>
-#include <errno.h>
 #include <stdio.h>
-#include <limits.h>
-#include <string.h>
 
 #ifndef __PHILO_H__
 # define __PHILO_H__
@@ -69,6 +65,7 @@ typedef struct		s_env
 {
     long            params[PARAM_NUMBER];
     int             terminate;
+    int             philo_full;
     unsigned long   start_time;
     t_fork          *fork_list;
     t_philo         *philo_list;
@@ -78,22 +75,14 @@ typedef struct		s_env
 t_env   *env;
 typedef void    t_philo_action(t_philo *philo);
 
-long    get_milliseconds(unsigned int seconds, unsigned int microseconds);
-long    get_seconds(unsigned int milliseconds);
 long    get_current_time(void);
 
-size_t  is_white(char c);
 int     my_atoi(char* string);
 
-void	init_philosophers(void);
-void	init_forks(void);
 void    initialize_env(int argc, char** argv);
 
-int     min(int number1, int number2);
-int     max(int number1, int number2);
 int     get_smaller_fork(int philo_id);
 int     get_bigger_fork(int philo_id);
-
 
 void    philo_eat(t_philo* philo);
 void    philo_sleep(t_philo* philo);
@@ -101,8 +90,11 @@ void    philo_think(t_philo* philo);
 
 void    print_action_message(int philo_id, const char* message);
 
-void    ft_msleep(unsigned int delay_second);
+void    msleep(unsigned int delay_second);
 
 void    setting_dinner(void);
 
+int     get_fork(t_philo *philo, t_fork* smaller_fork, t_fork* bigger_fork);
+
+void    clean_fork(t_philo *philo, t_fork *smaller_fork, t_fork *bigger_fork);
 #endif

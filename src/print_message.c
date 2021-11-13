@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 14:58:39 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/12 15:58:21 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/13 00:29:05 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void    print_action_message(int philo_id, const char* message)
 
     pthread_mutex_lock(&env->print_mutex);
     event_time = get_current_time() - env->start_time;
-    if(!env->terminate)
+    if (!env->terminate)
         printf("[%ld ms] philosopher id: %d %s\n", event_time, philo_id + 1, message);
-    if(!env->terminate)
+    if (!env->terminate)
         pthread_mutex_unlock(&env->print_mutex);
 }

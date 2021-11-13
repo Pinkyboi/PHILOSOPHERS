@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_msleep.c                                        :+:      :+:    :+:   */
+/*   msleep.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 15:02:57 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/12 20:03:50 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/12 23:38:18 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    ft_msleep(unsigned int delay_second)
+void    msleep(unsigned int delay_second)
 {
-    long    start_time;
+    int    end_time;
 
-    start_time = get_current_time();
-    while (get_current_time() <= start_time + delay_second)
+    end_time = get_current_time() + delay_second;
+    while (end_time > get_current_time())
     {
         if (env->terminate)
             return ;

@@ -6,13 +6,16 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:00:09 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/01 15:01:28 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/13 00:40:03 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-size_t  is_white(char c)
+#define INT_MAX +2147483647
+#define INT_MIN -2147483648
+
+static size_t  is_white(char c)
 {
     return (c == ' ' || c == '\t' || c == '\n');
 }

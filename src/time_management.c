@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   time_management.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/01 11:51:45 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/10 15:02:54 by abenaiss         ###   ########.fr       */
+/*   Created: 2021/11/01 14:58:36 by abenaiss          #+#    #+#             */
+/*   Updated: 2021/11/13 01:38:31 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int main(int argc, char** argv)
+static long    get_milliseconds(unsigned int seconds, unsigned int microseconds)
 {
-    env = (t_env *)malloc(sizeof(t_env));
-    if(argc != 5 && argc != 6)
-    {
-        write(1, USAGE_MESSAGE, 105);
-        exit(-1);
-    }
-    initialize_env(argc, argv);
-    setting_dinner();
+    return (seconds * 1000 + microseconds / 1000);
+}
+
+long     get_current_time(void)
+{
+    struct timeval  tv;
+
+    gettimeofday(&tv, NULL);
+    return (get_milliseconds(tv.tv_sec, tv.tv_usec));
 }
