@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 11:34:29 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/20 09:20:07 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/20 09:40:09 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@
 #define ERR_ZERO 3
 #define ERR_MALLOC 4
 
+#define RED_TEXT "\033[0;31m"
+#define GREEN_TEXT "\033[0;32m"
+#define COLOR_ESC "\033[0m"
 
 enum
 {

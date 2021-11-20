@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/13 00:30:51 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/20 08:36:12 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/20 09:43:29 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void     attribute_fork(t_philo *philo, t_fork* fork)
 {
     fork->users[curent_user] = philo->id;
     fork->users[past_user] = philo->id;
-    print_action_message(philo, "picked a fork");   
+    print_action_message(philo, GREEN_TEXT"picked a fork"COLOR_ESC);   
 }
 
 static short    is_fork_available(t_philo *philo, t_fork* fork)
