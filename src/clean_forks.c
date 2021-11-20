@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/13 00:37:49 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/13 00:37:58 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/19 12:52:32 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void    clean_fork(t_philo *philo, t_fork *smaller_fork, t_fork *bigger_fork)
 {
     bigger_fork->users[curent_user] = -1;
     bigger_fork->users[past_user] = philo->id;
-    print_action_message(philo->id, "dropped a fork");
+    print_action_message(philo, "dropped a fork");
     smaller_fork->users[curent_user] = -1;
     smaller_fork->users[past_user] = philo->id;
-    print_action_message(philo->id, "dropped a fork");
+    print_action_message(philo, "dropped a fork");
 }

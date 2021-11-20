@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/13 00:30:51 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/13 02:25:40 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/20 08:36:12 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static short    wait_turn(t_philo *philo, t_fork* fork)
 {
-    while (!env->terminate)
+    while (!(*philo->terminate))
     {
         if (fork->users[curent_user] == -1 && philo->id != fork->users[past_user])
             return (1);
@@ -27,7 +27,7 @@ static void     attribute_fork(t_philo *philo, t_fork* fork)
 {
     fork->users[curent_user] = philo->id;
     fork->users[past_user] = philo->id;
-    print_action_message(philo->id, "picked a fork");   
+    print_action_message(philo, "picked a fork");   
 }
 
 static short    is_fork_available(t_philo *philo, t_fork* fork)
@@ -37,9 +37,9 @@ static short    is_fork_available(t_philo *philo, t_fork* fork)
     return (0);
 }    
 
-static short    execute_philo(void)
+static short    execute_philo(t_philo *philo)
 {
-    while (!env->terminate)
+    while (!(*philo->terminate))
         usleep(10);
     return (0);
 }
@@ -48,8 +48,9 @@ int             get_fork(t_philo *philo, t_fork* smaller_fork, t_fork* bigger_fo
 {
     pthread_mutex_lock(&smaller_fork->fork_lock);
     if (pthread_mutex_lock(&bigger_fork->fork_lock))
-        return (execute_philo());
-    if (is_fork_available(philo, smaller_fork) && is_fork_available(philo, bigger_fork))
+        return (execute_philo(philo));
+    if (is_fork_available(philo, smaller_fork)
+            && is_fork_available(philo, bigger_fork))
     {
         attribute_fork(philo, bigger_fork);
         attribute_fork(philo, smaller_fork);

@@ -6,32 +6,43 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:27:10 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/13 02:32:06 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/20 09:33:41 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void init_philosophers(void)
+static short init_philosophers(t_env *env)
 {
 	int i;
 
 	i = -1;
-    env->philo_list = (t_philo*)malloc(sizeof(t_philo) * env->params[philo_number]);
+    env->philo_list = malloc(sizeof(t_philo) * env->params[philo_number]);
+    if (!env->philo_list)
+        return (ERR_MALLOC);
 	while (++i < env->params[philo_number])
     {
+        env->philo_list[i].fork_list = env->fork_list;
+        env->philo_list[i].params = env->params;
+        env->philo_list[i].print_mutex = &env->print_mutex;
+        env->philo_list[i].terminate = &env->terminate;
+        env->philo_list[i].start_time = &env->start_time;
+        env->philo_list[i].philo_full = &env->philo_full;
 		env->philo_list[i].id = i;
         env->philo_list[i].eat_count = 0;
     }
+    return (0);
 }
 
-static void init_forks(void)
+static short init_forks(t_env *env)
 {
 	int i;
 
 	i = -1;
     env->fork_list = (t_fork*)malloc(sizeof(t_fork) * env->params[philo_number]);
-	while (++i < env->params[philo_number])
+	if (!env->fork_list)
+        return (ERR_MALLOC);
+    while (++i < env->params[philo_number])
     {
         env->fork_list[i].fork_lock
             = (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;
@@ -39,20 +50,47 @@ static void init_forks(void)
         env->fork_list[i].users[past_user] = -1;
         env->fork_list[i].id = i;
     }
+    return (0);
 }
 
-void    initialize_env(int argc, char** argv)
+static short    verify_philo_params(int argc, const long *params)
 {
-    env->params[philo_number]  = my_atoi(argv[1]);
-    env->params[time_to_die]   = my_atoi(argv[2]);
-    env->params[time_to_eat]   = my_atoi(argv[3]);
+    int i;
+    int param_number;
+
+    param_number = PARAM_NUMBER;
+    if(argc != 6)
+        param_number--;
+    i = -1;
+    while (++i < param_number)
+    {
+        if (params[i] == 0)
+            return (ERR_ZERO);
+        if (params[i] < 0)
+            return (ERR_NEGATIVE);
+    }
+    return (0);
+}
+
+short    initialize_env(t_env *env, int argc, char** argv)
+{
+    short err_handler;
+
+    env->params[philo_number] = my_atoi(argv[1]);
+    env->params[time_to_die] = my_atoi(argv[2]);
+    env->params[time_to_eat] = my_atoi(argv[3]);
     env->params[time_to_sleep] = my_atoi(argv[4]);
     env->terminate = flase;
     env->philo_full = 0;
+    pthread_mutex_init(&env->print_mutex, NULL);
     if (argc == 6)
         env->params[max_eat_count] = my_atoi(argv[5]);
     else
         env->params[max_eat_count] = -1;
-    init_philosophers();
-    init_forks();
+    err_handler = verify_philo_params(argc, env->params);
+    if (err_handler)
+        return (err_handler);
+    if (init_forks(env) || init_philosophers(env))
+        return (ERR_MALLOC);
+    return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 15:00:14 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/13 02:34:41 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/20 09:25:16 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,17 @@ static void*    watcher_life_cycle(void* arg)
     t_philo *philo;
 
     philo = (t_philo *)arg;
-    while (!env->terminate)
+    while (!(*philo->terminate))
     {
-        if (get_current_time() - philo->last_meal > env->params[time_to_die])
+        if (get_current_time() - philo->last_meal > philo->params[time_to_die])
         {
-            print_action_message(philo->id, "died");
-            env->terminate = true;
+            print_action_message(philo, "died");
+            *(philo->terminate) = true;
         }
-        if (env->philo_full >= env->params[philo_number])
+        if (*(philo->philo_full) == philo->params[philo_number])
         {
-            pthread_mutex_lock(&env->print_mutex);
-            env->terminate = true;
+            pthread_mutex_lock(philo->print_mutex);
+            *(philo->terminate) = true;
         }
     }
     return (NULL);   
@@ -45,7 +45,7 @@ static void*   philo_life_cycle(void* arg)
 
     action_index = 0;
     philo = (t_philo*)arg;
-    while (!env->terminate)
+    while (!(*philo->terminate))
     {
         g_philo_action[action_index](philo);
         action_index++;
@@ -54,7 +54,7 @@ static void*   philo_life_cycle(void* arg)
     return (NULL);
 }
 
-static void    clear_env(void)
+static void    clear_env(t_env *env)
 {
     int i;
 
@@ -62,11 +62,13 @@ static void    clear_env(void)
     while(++i < env->params[philo_number])
         pthread_mutex_destroy(&env->fork_list[i].fork_lock);
     pthread_mutex_destroy(&env->print_mutex);
-    free(env->fork_list);
-    free(env->philo_list);
+    if (env->fork_list)
+        free(env->fork_list);
+    if (env->philo_list)
+        free(env->philo_list);
 }
 
-void    setting_dinner(void)
+void    setting_dinner(t_env *env)
 {
     int i;
     int failed_philo;
@@ -89,5 +91,5 @@ void    setting_dinner(void)
         pthread_join(env->philo_list[i].w_tid, NULL);
         pthread_join(env->philo_list[i].p_tid, NULL);
     }
-    clear_env();
+    clear_env(env);
 }
