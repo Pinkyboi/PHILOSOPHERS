@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:27:10 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/20 09:33:41 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/23 15:44:07 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ short    initialize_env(t_env *env, int argc, char** argv)
     env->params[time_to_sleep] = my_atoi(argv[4]);
     env->terminate = flase;
     env->philo_full = 0;
+    env->fork_list = NULL;
+    env->philo_list = NULL;
     pthread_mutex_init(&env->print_mutex, NULL);
     if (argc == 6)
         env->params[max_eat_count] = my_atoi(argv[5]);
