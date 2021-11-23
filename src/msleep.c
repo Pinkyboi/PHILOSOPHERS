@@ -12,15 +12,15 @@
 
 #include "philo.h"
 
-void    msleep(short *terminate, unsigned int delay_second)
+void	msleep(short *terminate, unsigned int delay_second)
 {
-    int    end_time;
+	int	end_time;
 
-    end_time = get_current_time() + delay_second;
-    while (end_time > get_current_time())
-    {
-        if (*terminate)
-            return ;
-        usleep(10);
-    }
+	end_time = get_current_time() + delay_second;
+	while (end_time > get_current_time())
+	{
+		if (*terminate)
+			return ;
+		usleep(10);
+	}
 }
