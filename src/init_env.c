@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:27:10 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/23 17:44:38 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/30 03:06:19 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ static short	init_forks(t_env *env)
 			= (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;
 		env->fork_list[i].users[curent_user] = -1;
 		env->fork_list[i].users[past_user] = -1;
-		env->fork_list[i].id = i;
 	}
 	return (0);
 }
@@ -73,10 +72,24 @@ static short	verify_philo_params(int argc, const long *params)
 	return (0);
 }
 
-short	initialize_env(t_env *env, int argc, char **argv)
+static short	safe_init(int argc, t_env *env)
 {
 	short	err_handler;
 
+	err_handler = verify_philo_params(argc, env->params);
+	if (err_handler)
+		return (err_handler);
+	err_handler = init_forks(env);
+	if (err_handler)
+		return (err_handler);
+	err_handler = init_philosophers(env);
+	if (err_handler)
+		return (err_handler);
+	return (0);
+}
+
+short	initialize_env(t_env *env, int argc, char **argv)
+{
 	env->params[philo_number] = my_atoi(argv[1]);
 	env->params[time_to_die] = my_atoi(argv[2]);
 	env->params[time_to_eat] = my_atoi(argv[3]);
@@ -85,15 +98,11 @@ short	initialize_env(t_env *env, int argc, char **argv)
 	env->philo_full = 0;
 	env->fork_list = NULL;
 	env->philo_list = NULL;
-	pthread_mutex_init(&env->print_mutex, NULL);
+	if (pthread_mutex_init(&env->print_mutex, NULL))
+		return (ERR_MUTEX);
 	if (argc == 6)
 		env->params[max_eat_count] = my_atoi(argv[5]);
 	else
 		env->params[max_eat_count] = -1;
-	err_handler = verify_philo_params(argc, env->params);
-	if (err_handler)
-		return (err_handler);
-	if (init_forks(env) || init_philosophers(env))
-		return (ERR_MALLOC);
-	return (0);
+	return (safe_init(argc, env));
 }

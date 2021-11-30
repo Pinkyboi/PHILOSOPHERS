@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 11:51:45 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/23 17:21:43 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/11/30 02:23:01 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	error_handler(short error_code)
 		printf("%s\n", "Usage: ./philo [philosopher's number]"
 			"[time to die] [time to eat] [time to sleep]"
 			"[max number of meals]\n");
-	if (error_code == ERR_MALLOC)
+	if (error_code == ERR_MALLOC || error_code == ERR_MUTEX)
 		printf("%s\n", "Internal error, please try again.");
 	if (error_code == ERR_NEGATIVE)
 		printf("%s\n", "No passed parameter should be negative.");
