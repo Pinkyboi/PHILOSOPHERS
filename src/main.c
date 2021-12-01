@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 11:51:45 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/01 00:56:12 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/01 15:57:26 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static short	error_handler(short error_code)
 	if (error_code == ERR_WRONG_PARAM_NUMBER)
 		printf("%s\n", "Usage: ./philo [philosopher's number]"
 			"[time to die] [time to eat] [time to sleep]"
-			"[max number of meals]\n");
+			"[max number of meals]");
 	if (error_code == ERR_MALLOC || error_code == ERR_MUTEX)
 		printf("%s\n", "Internal error, please try again.");
 	if (error_code == ERR_NEGATIVE)
@@ -38,7 +38,10 @@ int	main(int argc, char **argv)
 	short	err_status;
 
 	if (argc != 5 && argc != 6)
+	{
 		error_handler(ERR_WRONG_PARAM_NUMBER);
+		return (0);
+	}
 	env = (t_env *)malloc(sizeof(t_env));
 	if (!env)
 		error_handler(ERR_MALLOC);

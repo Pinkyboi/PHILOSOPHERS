@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 14:57:18 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/01 01:33:11 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/01 16:02:09 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,19 @@ void	philo_eat(t_philo *philo)
 
 void	philo_sleep(t_philo *philo)
 {
-	print_action_message(philo, GREEN_TEXT"is sleeping"COLOR_ESC);
-	msleep(philo->terminate, philo->params[time_to_sleep]);
+	pthread_mutex_lock(&philo->death_mutex);
+	if (!(*philo->terminate))
+	{
+		print_action_message(philo, GREEN_TEXT"is sleeping"COLOR_ESC);
+		msleep(philo->terminate, philo->params[time_to_sleep]);
+	}
+	pthread_mutex_unlock(&philo->death_mutex);
 }
 
 void	philo_think(t_philo *philo)
 {
-	print_action_message(philo, GREEN_TEXT"is thinking"COLOR_ESC);
+	pthread_mutex_lock(&philo->death_mutex);
+	if (!(*philo->terminate))
+		print_action_message(philo, GREEN_TEXT"is thinking"COLOR_ESC);
+	pthread_mutex_unlock(&philo->death_mutex);
 }
