@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:27:10 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/30 03:06:19 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/01 01:28:45 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static short	init_philosophers(t_env *env)
 		env->philo_list[i].terminate = &env->terminate;
 		env->philo_list[i].start_time = &env->start_time;
 		env->philo_list[i].philo_full = &env->philo_full;
+		pthread_mutex_init(&env->philo_list[i].death_mutex, NULL);
 		env->philo_list[i].id = i;
 		env->philo_list[i].eat_count = 0;
 	}

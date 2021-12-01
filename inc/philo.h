@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 11:34:29 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/30 02:38:29 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/01 01:25:41 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_philo
 	unsigned long	*start_time;
 	t_fork			*fork_list;
 	pthread_mutex_t	*print_mutex;
+	pthread_mutex_t	death_mutex;
 	pthread_t		p_tid;
 	pthread_t		w_tid;
 }					t_philo;
@@ -102,6 +103,7 @@ void	philo_sleep(t_philo *philo);
 void	philo_think(t_philo *philo);
 
 void	print_action_message(t_philo *philo, const char *message);
+void	print_action_death(t_philo *philo);
 
 void	msleep(short *terminate, unsigned int delay_second);
 

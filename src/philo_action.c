@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 14:57:18 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/23 17:40:23 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/01 01:33:11 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,17 @@ void	philo_eat(t_philo *philo)
 	bigger_fork = &philo->fork_list[get_bigger_fork(philo->id, fork_number)];
 	if (get_fork(philo, smaller_fork, bigger_fork))
 	{
-		philo->last_meal = get_current_time();
-		print_action_message(philo, GREEN_TEXT"is eating"COLOR_ESC);
-		msleep(philo->terminate, philo->params[time_to_eat]);
-		if (++philo->eat_count == philo->params[max_eat_count])
-			philo->philo_full++;
-		clean_fork(philo, smaller_fork, bigger_fork);
+		pthread_mutex_lock(&philo->death_mutex);
+		if (!(*philo->terminate))
+		{
+			philo->last_meal = get_current_time();
+			print_action_message(philo, GREEN_TEXT"is eating"COLOR_ESC);
+			msleep(philo->terminate, philo->params[time_to_eat]);
+			if (++philo->eat_count == philo->params[max_eat_count])
+				philo->philo_full++;
+			clean_fork(philo, smaller_fork, bigger_fork);
+		}
+		pthread_mutex_unlock(&philo->death_mutex);
 	}
 }
 

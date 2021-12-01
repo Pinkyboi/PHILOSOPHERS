@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 15:00:14 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/30 02:40:49 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/01 01:32:34 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,17 @@ static void	*watcher_life_cycle(void *arg)
 	philo = (t_philo *)arg;
 	while (!(*philo->terminate))
 	{
+		pthread_mutex_lock(&philo->death_mutex);
 		if (get_current_time() - philo->last_meal > philo->params[time_to_die])
-		{
-			print_action_message(philo, RED_TEXT"died"COLOR_ESC);
-			*(philo->terminate) = true;
-		}
+			print_action_death(philo);
 		if (*(philo->philo_full) == philo->params[philo_number])
 		{
 			pthread_mutex_lock(philo->print_mutex);
 			*(philo->terminate) = true;
+			pthread_mutex_unlock(philo->print_mutex);
 		}
+		pthread_mutex_unlock(&philo->death_mutex);
+		usleep(10);
 	}
 	return (NULL);
 }
