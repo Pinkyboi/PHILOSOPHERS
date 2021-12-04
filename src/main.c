@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 22:02:07 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/04 01:08:58 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/04 14:49:43 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,11 @@ static void	clear_env(t_env *env)
 	i = -1;
 	pthread_mutex_destroy(&env->print_mutex);
 	if (env->fork_list)
+	{
+		while (++i < env->params[philo_number])
+			pthread_mutex_destroy(&env->fork_list[i].fork_lock);
 		free(env->fork_list);
+	}
 	if (env->philo_list)
 	{
 		while (++i < env->params[philo_number])

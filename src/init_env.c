@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:27:10 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/04 00:03:20 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/04 14:48:38 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static short	init_philosophers(t_env *env)
 		return (ERR_MALLOC);
 	while (++i < env->params[philo_number])
 	{
+		if (pthread_mutex_init(&env->philo_list[i].death_mutex, NULL))
+			return (ERR_MUTEX);
 		env->philo_list[i].id = i;
 		env->philo_list[i].big_fork = get_bigger_fork(i, env);
 		env->philo_list[i].small_fork = get_smaller_fork(i, env);
@@ -29,7 +31,6 @@ static short	init_philosophers(t_env *env)
 		env->philo_list[i].print_mutex = &env->print_mutex;
 		env->philo_list[i].end_thread = false;
 		env->philo_list[i].eat_count = 0;
-		pthread_mutex_init(&env->philo_list[i].death_mutex, NULL);
 	}
 	return (0);
 }
@@ -45,7 +46,8 @@ static short	init_forks(t_env *env)
 		return (ERR_MALLOC);
 	while (++i < env->params[philo_number])
 	{
-		pthread_mutex_init(&env->fork_list[i].fork_lock, NULL);
+		if (pthread_mutex_init(&env->fork_list[i].fork_lock, NULL))
+			return (ERR_MUTEX);
 		env->fork_list[i].is_fork_used = false;
 		env->fork_list[i].past_users = -1;
 	}
