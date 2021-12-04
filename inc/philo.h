@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/01 11:34:29 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/01 01:25:41 by abenaiss         ###   ########.fr       */
+/*   Created: 2021/12/03 21:55:35 by abenaiss          #+#    #+#             */
+/*   Updated: 2021/12/04 00:33:23 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,12 @@
 # define GREEN_TEXT "\033[0;32m"
 # define COLOR_ESC "\033[0m"
 
-enum
-{
-	curent_user,
-	past_user
-};
+# define VALID_PRINT_SIG 1
+# define STOP_PRINT_SIG 0
 
 enum
 {
-	flase,
+	false,
 	true
 };
 
@@ -56,35 +53,34 @@ enum
 typedef struct s_fork
 {
 	pthread_mutex_t	fork_lock;
-	int				users[2];
-	int				fork_status;
+	unsigned int	past_users;
+	short			is_fork_used;
 }					t_fork;
 
 typedef struct s_philo
 {
-	short			*terminate;
-	int				id;
-	int				eat_count;
-	int				last_meal;
-	int				*philo_full;
-	long			*params;
-	unsigned long	*start_time;
-	t_fork			*fork_list;
+	short			end_thread;
+	unsigned int	id;
+	unsigned int	last_meal;
+	unsigned int	start_time;
+	unsigned int	eat_count;
+	unsigned int	*params;
+	t_fork			*small_fork;
+	t_fork			*big_fork;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	death_mutex;
 	pthread_t		p_tid;
-	pthread_t		w_tid;
 }					t_philo;
 
 typedef struct s_env
 {
-	short			terminate;
-	int				philo_full;
-	long			params[PARAM_NUMBER];
-	unsigned long	start_time;
+	short			end_simulation;
+	unsigned int	params[PARAM_NUMBER];
+	unsigned int	start_time;
 	t_fork			*fork_list;
 	t_philo			*philo_list;
 	pthread_mutex_t	print_mutex;
+	pthread_t		w_tid;
 }					t_env;
 
 typedef void	t_philo_action(t_philo *philo);
@@ -95,21 +91,21 @@ int		my_atoi(char *string);
 
 short	initialize_env(t_env *env, int argc, char **argv);
 
-int		get_smaller_fork(int philo_id, int fork_number);
-int		get_bigger_fork(int philo_id, int fork_number);
+t_fork	*get_smaller_fork(int philo_id, t_env *env);
+t_fork	*get_bigger_fork(int philo_id, t_env *env);
 
 void	philo_eat(t_philo *philo);
 void	philo_sleep(t_philo *philo);
 void	philo_think(t_philo *philo);
 
-void	print_action_message(t_philo *philo, const char *message);
-void	print_action_death(t_philo *philo);
+void	print_action_message(t_philo *philo,
+			const char *message, int print_sig);
 
-void	msleep(short *terminate, unsigned int delay_second);
+void	msleep(short *end_simulation, unsigned int delay_second);
 
 void	setting_dinner(t_env *env);
 
-int		get_fork(t_philo *philo, t_fork *smaller_fork, t_fork *bigger_fork);
+int		get_fork(t_philo *philo);
 
-void	clean_fork(t_philo *philo, t_fork *smaller_fork, t_fork *bigger_fork);
+void	clean_fork(t_philo *philo);
 #endif

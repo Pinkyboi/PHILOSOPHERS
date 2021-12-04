@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:27:10 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/01 01:28:45 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/04 00:03:20 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static short	init_philosophers(t_env *env)
 {
-	int	i;
+	unsigned int	i;
 
 	i = -1;
 	env->philo_list = malloc(sizeof(t_philo) * env->params[philo_number]);
@@ -22,22 +22,21 @@ static short	init_philosophers(t_env *env)
 		return (ERR_MALLOC);
 	while (++i < env->params[philo_number])
 	{
-		env->philo_list[i].fork_list = env->fork_list;
+		env->philo_list[i].id = i;
+		env->philo_list[i].big_fork = get_bigger_fork(i, env);
+		env->philo_list[i].small_fork = get_smaller_fork(i, env);
 		env->philo_list[i].params = env->params;
 		env->philo_list[i].print_mutex = &env->print_mutex;
-		env->philo_list[i].terminate = &env->terminate;
-		env->philo_list[i].start_time = &env->start_time;
-		env->philo_list[i].philo_full = &env->philo_full;
-		pthread_mutex_init(&env->philo_list[i].death_mutex, NULL);
-		env->philo_list[i].id = i;
+		env->philo_list[i].end_thread = false;
 		env->philo_list[i].eat_count = 0;
+		pthread_mutex_init(&env->philo_list[i].death_mutex, NULL);
 	}
 	return (0);
 }
 
 static short	init_forks(t_env *env)
 {
-	int	i;
+	unsigned int	i;
 
 	i = -1;
 	env->fork_list
@@ -46,15 +45,14 @@ static short	init_forks(t_env *env)
 		return (ERR_MALLOC);
 	while (++i < env->params[philo_number])
 	{
-		env->fork_list[i].fork_lock
-			= (pthread_mutex_t)PTHREAD_ERRORCHECK_MUTEX_INITIALIZER;
-		env->fork_list[i].users[curent_user] = -1;
-		env->fork_list[i].users[past_user] = -1;
+		pthread_mutex_init(&env->fork_list[i].fork_lock, NULL);
+		env->fork_list[i].is_fork_used = false;
+		env->fork_list[i].past_users = -1;
 	}
 	return (0);
 }
 
-static short	verify_philo_params(int argc, const long *params)
+static short	verify_philo_params(int argc, const unsigned int *params)
 {
 	int	i;
 	int	param_number;
@@ -95,8 +93,7 @@ short	initialize_env(t_env *env, int argc, char **argv)
 	env->params[time_to_die] = my_atoi(argv[2]);
 	env->params[time_to_eat] = my_atoi(argv[3]);
 	env->params[time_to_sleep] = my_atoi(argv[4]);
-	env->terminate = flase;
-	env->philo_full = 0;
+	env->end_simulation = false;
 	env->fork_list = NULL;
 	env->philo_list = NULL;
 	if (pthread_mutex_init(&env->print_mutex, NULL))
@@ -104,6 +101,6 @@ short	initialize_env(t_env *env, int argc, char **argv)
 	if (argc == 6)
 		env->params[max_eat_count] = my_atoi(argv[5]);
 	else
-		env->params[max_eat_count] = -1;
+		env->params[max_eat_count] = 0;
 	return (safe_init(argc, env));
 }

@@ -14,7 +14,7 @@
 
 void	msleep(short *terminate, unsigned int delay_second)
 {
-	int	end_time;
+	unsigned int	end_time;
 
 	end_time = get_current_time() + delay_second;
 	while (end_time > get_current_time())

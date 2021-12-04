@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:03:06 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/11/23 17:41:35 by abenaiss         ###   ########.fr       */
+/*   Updated: 2021/12/04 01:10:13 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,18 @@ static int	max(int number1, int number2)
 	return (number2);
 }
 
-int	get_smaller_fork(int philo_id, int fork_number)
+t_fork	*get_smaller_fork(int philo_id, t_env *env)
 {
-	return (min(philo_id, (philo_id + 1) % fork_number));
+	unsigned int	fork_number;
+
+	fork_number = env->params[philo_number];
+	return (&env->fork_list[min(philo_id, (philo_id + 1) % fork_number)]);
 }
 
-int	get_bigger_fork(int philo_id, int fork_number)
+t_fork	*get_bigger_fork(int philo_id, t_env *env)
 {
-	return (max(philo_id, (philo_id + 1) % fork_number));
+	unsigned int	fork_number;
+
+	fork_number = env->params[philo_number];
+	return (&env->fork_list[max(philo_id, (philo_id + 1) % fork_number)]);
 }
