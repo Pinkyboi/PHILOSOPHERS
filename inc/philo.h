@@ -26,7 +26,9 @@
 # define ERR_NEGATIVE 2
 # define ERR_ZERO 3
 # define ERR_MALLOC 4
-# define ERR_MUTEX 5
+# define ERR_MUTEX_FORK 5
+# define ERR_MUTEX_DEATH 6
+# define ERR_MUTEX_PRINT 7
 
 # define RED_TEXT "\033[0;31m"
 # define GREEN_TEXT "\033[0;32m"

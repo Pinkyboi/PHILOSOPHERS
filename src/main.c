@@ -23,7 +23,10 @@ static short	error_handler(short error_code)
 		printf("%s\n", "Usage: ./philo [philosopher's number]"
 			"[time to die] [time to eat] [time to sleep]"
 			"[max number of meals]");
-	if (error_code == ERR_MALLOC || error_code == ERR_MUTEX)
+	if (error_code == ERR_MALLOC)
+		printf("%s\n", "Internal error, please try again.");
+	if (error_code == ERR_MUTEX_DEATH || error_code == ERR_MUTEX_PRINT
+		|| error_code == ERR_MUTEX_FORK)
 		printf("%s\n", "Internal error, please try again.");
 	if (error_code == ERR_NEGATIVE)
 		printf("%s\n", "No passed parameter should be negative.");
@@ -32,22 +35,25 @@ static short	error_handler(short error_code)
 	return (1);
 }
 
-static void	clear_env(t_env *env)
+static void	clear_env(t_env *env, short err_code)
 {
 	unsigned int	i;
 
 	i = -1;
-	pthread_mutex_destroy(&env->print_mutex);
+	if (err_code != ERR_MUTEX_PRINT)
+		pthread_mutex_destroy(&env->print_mutex);
 	if (env->fork_list)
 	{
-		while (++i < env->params[philo_number])
-			pthread_mutex_destroy(&env->fork_list[i].fork_lock);
+		if (err_code != ERR_MUTEX_FORK)
+			while (++i < env->params[philo_number])
+				pthread_mutex_destroy(&env->fork_list[i].fork_lock);
 		free(env->fork_list);
 	}
 	if (env->philo_list)
 	{
-		while (++i < env->params[philo_number])
-			pthread_mutex_destroy(&env->philo_list[i].death_mutex);
+		if (err_code != ERR_MUTEX_DEATH)
+			while (++i < env->params[philo_number])
+				pthread_mutex_destroy(&env->philo_list[i].death_mutex);
 		free(env->philo_list);
 	}
 }
@@ -55,23 +61,23 @@ static void	clear_env(t_env *env)
 int	main(int argc, char **argv)
 {
 	t_env	*env;
-	short	err_status;
+	short	err_code;
 
 	if (argc != 5 && argc != 6)
 	{
 		error_handler(ERR_WRONG_PARAM_NUMBER);
 		return (0);
 	}
-	err_status = 0;
+	err_code = 0;
 	env = (t_env *)malloc(sizeof(t_env));
 	if (!env)
-		err_status = error_handler(ERR_MALLOC);
-	if (!err_status)
+		err_code = error_handler(ERR_MALLOC);
+	if (!err_code)
 	{
-		err_status = error_handler(initialize_env(env, argc, argv));
-		if (!err_status)
+		err_code = initialize_env(env, argc, argv);
+		if (!error_handler(err_code))
 			setting_dinner(env);
-		clear_env(env);
+		clear_env(env, err_code);
 	}
 	return (0);
 }

@@ -23,7 +23,11 @@ static short	init_philosophers(t_env *env)
 	while (++i < env->params[philo_number])
 	{
 		if (pthread_mutex_init(&env->philo_list[i].death_mutex, NULL))
-			return (ERR_MUTEX);
+		{
+			while(i--)
+				pthread_mutex_destroy(&env->philo_list[i].death_mutex);
+			return (ERR_MUTEX_DEATH);
+		}
 		env->philo_list[i].id = i;
 		env->philo_list[i].big_fork = get_bigger_fork(i, env);
 		env->philo_list[i].small_fork = get_smaller_fork(i, env);
@@ -32,6 +36,8 @@ static short	init_philosophers(t_env *env)
 		env->philo_list[i].end_thread = false;
 		env->philo_list[i].eat_count = 0;
 	}
+	
+
 	return (0);
 }
 
@@ -39,15 +45,19 @@ static short	init_forks(t_env *env)
 {
 	unsigned int	i;
 
-	i = -1;
 	env->fork_list
 		= (t_fork*)malloc(sizeof(t_fork) * env->params[philo_number]);
 	if (!env->fork_list)
 		return (ERR_MALLOC);
+	i = -1;
 	while (++i < env->params[philo_number])
 	{
 		if (pthread_mutex_init(&env->fork_list[i].fork_lock, NULL))
-			return (ERR_MUTEX);
+		{
+			while(i--)
+				pthread_mutex_destroy(&env->fork_list[i].fork_lock);
+			return (ERR_MUTEX_FORK);
+		}
 		env->fork_list[i].is_fork_used = false;
 		env->fork_list[i].past_users = -1;
 	}
@@ -99,7 +109,10 @@ short	initialize_env(t_env *env, int argc, char **argv)
 	env->fork_list = NULL;
 	env->philo_list = NULL;
 	if (pthread_mutex_init(&env->print_mutex, NULL))
-		return (ERR_MUTEX);
+	{
+		pthread_mutex_destroy(&env->print_mutex);
+		return (ERR_MUTEX_PRINT);
+	}
 	if (argc == 6)
 		env->params[max_eat_count] = my_atoi(argv[5]);
 	else
