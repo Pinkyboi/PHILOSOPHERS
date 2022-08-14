@@ -14,9 +14,6 @@
 
 void	philo_eat(t_philo *philo)
 {
-	int		fork_number;
-
-	fork_number = philo->params[philo_number];
 	if (get_fork(philo))
 	{
 		pthread_mutex_lock(&philo->death_mutex);
