@@ -24,7 +24,7 @@ static short	init_philosophers(t_env *env)
 	{
 		if (pthread_mutex_init(&env->philo_list[i].death_mutex, NULL))
 		{
-			while(i--)
+			while (i--)
 				pthread_mutex_destroy(&env->philo_list[i].death_mutex);
 			return (ERR_MUTEX_DEATH);
 		}
@@ -35,9 +35,9 @@ static short	init_philosophers(t_env *env)
 		env->philo_list[i].print_mutex = &env->print_mutex;
 		env->philo_list[i].end_thread = false;
 		env->philo_list[i].eat_count = 0;
+		env->philo_list[i].last_meal = 0;
+		env->philo_list[i].start_time = 0;
 	}
-	
-
 	return (0);
 }
 
@@ -54,7 +54,7 @@ static short	init_forks(t_env *env)
 	{
 		if (pthread_mutex_init(&env->fork_list[i].fork_lock, NULL))
 		{
-			while(i--)
+			while (i--)
 				pthread_mutex_destroy(&env->fork_list[i].fork_lock);
 			return (ERR_MUTEX_FORK);
 		}

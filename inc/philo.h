@@ -29,6 +29,7 @@
 # define ERR_MUTEX_FORK 5
 # define ERR_MUTEX_DEATH 6
 # define ERR_MUTEX_PRINT 7
+# define ERR_THREAD 8
 
 # define RED_TEXT "\033[0;31m"
 # define GREEN_TEXT "\033[0;32m"
@@ -110,4 +111,6 @@ void	setting_dinner(t_env *env);
 int		get_fork(t_philo *philo);
 
 void	clean_fork(t_philo *philo);
+
+short	error_handler(short error_code);
 #endif

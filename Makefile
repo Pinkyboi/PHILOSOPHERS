@@ -29,6 +29,7 @@ FILES_NAME =	clean_forks.c\
 				philo_forks.c\
 				pick_forks.c\
 				print_message.c\
+				error_handle.c\
 				time_management.c
 
 HEADER_NAME = philo.h\
