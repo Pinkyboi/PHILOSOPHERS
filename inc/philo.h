@@ -86,8 +86,6 @@ typedef struct s_env
 	pthread_t		w_tid;
 }					t_env;
 
-typedef void	t_philo_action(t_philo *philo);
-
 long	get_current_time(void);
 
 int		my_atoi(char *string);

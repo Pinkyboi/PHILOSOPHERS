@@ -25,7 +25,6 @@ static short	wait_turn(t_philo *philo, t_fork *fork)
 	{
 		if (is_fork_available(philo, fork))
 			return (1);
-		usleep(10);
 	}
 	return (0);
 }
@@ -50,17 +49,19 @@ int	get_fork(t_philo *philo)
 	if (philo->small_fork == philo->big_fork)
 		return (execute_philo(philo));
 	pthread_mutex_lock(&philo->small_fork->fork_lock);
-	pthread_mutex_lock(&philo->big_fork->fork_lock);
-	if (is_fork_available(philo, philo->small_fork)
-		&& is_fork_available(philo, philo->big_fork))
+	if(is_fork_available(philo, philo->small_fork))
 	{
-		attribute_fork(philo, philo->big_fork);
-		attribute_fork(philo, philo->small_fork);
+		pthread_mutex_lock(&philo->big_fork->fork_lock);
+		if (is_fork_available(philo, philo->big_fork))
+		{
+			attribute_fork(philo, philo->big_fork);
+			attribute_fork(philo, philo->small_fork);
+			pthread_mutex_unlock(&philo->big_fork->fork_lock);
+			pthread_mutex_unlock(&philo->small_fork->fork_lock);
+			return (1);
+		}
 		pthread_mutex_unlock(&philo->big_fork->fork_lock);
-		pthread_mutex_unlock(&philo->small_fork->fork_lock);
-		return (1);
 	}
-	pthread_mutex_unlock(&philo->big_fork->fork_lock);
 	pthread_mutex_unlock(&philo->small_fork->fork_lock);
 	wait_turn(philo, philo->small_fork);
 	wait_turn(philo, philo->big_fork);

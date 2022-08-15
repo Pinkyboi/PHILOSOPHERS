@@ -54,6 +54,7 @@ static void	*watcher_life_cycle(void *arg)
 		}
 		if (stack_status == 0)
 			env->end_simulation = true;
+		usleep(10);
 	}
 	terminate_philo_threads(env);
 	return (NULL);
@@ -62,20 +63,13 @@ static void	*watcher_life_cycle(void *arg)
 static void	*philo_life_cycle(void *arg)
 {
 	t_philo					*philo;
-	int						action_index;
-	static t_philo_action	*philo_action[ACTION_NUMBER] = {
-		&philo_eat,
-		&philo_sleep,
-		&philo_think
-	};
 
-	action_index = 0;
 	philo = (t_philo *)arg;
 	while (!philo->end_thread)
 	{
-		philo_action[action_index](philo);
-		action_index++;
-		action_index %= ACTION_NUMBER;
+		philo_eat(philo);
+		philo_sleep(philo);
+		philo_think(philo);
 	}
 	return (NULL);
 }
