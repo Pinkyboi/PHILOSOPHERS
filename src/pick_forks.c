@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/13 00:30:51 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/04 01:10:25 by abenaiss         ###   ########.fr       */
+/*   Updated: 2022/08/15 22:57:30 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static short	wait_turn(t_philo *philo, t_fork *fork)
 	{
 		if (is_fork_available(philo, fork))
 			return (1);
+		usleep(10);
 	}
 	return (0);
 }

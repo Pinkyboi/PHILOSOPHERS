@@ -6,14 +6,14 @@
 #    By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/03 21:54:57 by abenaiss          #+#    #+#              #
-#    Updated: 2021/12/04 01:28:56 by abenaiss         ###   ########.fr        #
+#    Updated: 2022/08/15 20:01:15 by abenaiss         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = #-Wall -Wextra -Werror
 
 INC_DIR =./inc/
 SRC_DIR =./src/

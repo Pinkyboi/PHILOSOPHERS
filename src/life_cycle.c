@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 22:04:00 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/04 01:08:22 by abenaiss         ###   ########.fr       */
+/*   Updated: 2022/08/15 22:56:06 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,17 @@ static void terminate_philo_threads(t_env *env)
 		env->philo_list[philo_index].end_thread = true;
 }
 
-static void	check_starvation(t_env *env, t_philo current_philo)
+static void	check_starvation(t_env *env, t_philo *current_philo)
 {
-	pthread_mutex_lock(&current_philo.death_mutex);
-	if (get_current_time() - current_philo.last_meal >= env->params[time_to_die])
+	pthread_mutex_lock(&current_philo->death_mutex);
+	if (get_current_time() - current_philo->last_meal >= env->params[time_to_die])
 	{
 		env->end_simulation = true;
-		print_action_message(&current_philo,
+		current_philo->end_thread = true;
+		print_action_message(current_philo,
 			RED_TEXT"died"COLOR_ESC, STOP_PRINT_SIG);
 	}
-	pthread_mutex_unlock(&current_philo.death_mutex);
+	pthread_mutex_unlock(&current_philo->death_mutex);
 }
 
 static void	*watcher_life_cycle(void *arg)
@@ -50,7 +51,7 @@ static void	*watcher_life_cycle(void *arg)
 				stack_status--;
 			else
 				if (env->philo_list[philo_index].start_time)
-					check_starvation(env, env->philo_list[philo_index]);
+					check_starvation(env, &env->philo_list[philo_index]);
 		}
 		if (stack_status == 0)
 			env->end_simulation = true;
