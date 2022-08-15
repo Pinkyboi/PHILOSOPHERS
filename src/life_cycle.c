@@ -12,6 +12,15 @@
 
 #include "philo.h"
 
+static void terminate_philo_threads(t_env *env)
+{
+	int philo_index;
+
+	philo_index = -1;
+	while (++philo_index < (int)env->params[philo_number])
+		env->philo_list[philo_index].end_thread = true;
+}
+
 static void	check_starvation(t_env *env, t_philo current_philo)
 {
 	pthread_mutex_lock(&current_philo.death_mutex);
@@ -33,24 +42,20 @@ static void	*watcher_life_cycle(void *arg)
 	env = (t_env *)arg;
 	while (!env->end_simulation)
 	{
-		usleep(10);
 		philo_index = -1;
 		stack_status = env->params[philo_number];
 		while (++philo_index < (int)env->params[philo_number])
 		{
-			if (!env->philo_list[philo_index].start_time)
-				continue;
-			if (env->philo_list[philo_index].end_thread == false)
-				check_starvation(env, env->philo_list[philo_index]);
-			else
+			if (env->philo_list[philo_index].end_thread == true)
 				stack_status--;
+			else
+				if (env->philo_list[philo_index].start_time)
+					check_starvation(env, env->philo_list[philo_index]);
 		}
 		if (stack_status == 0)
 			env->end_simulation = true;
 	}
-	philo_index = -1;
-	while (++philo_index < (int)env->params[philo_number])
-		env->philo_list[philo_index].end_thread = true;
+	terminate_philo_threads(env);
 	return (NULL);
 }
 
@@ -92,11 +97,11 @@ void	setting_dinner(t_env *env)
 			env->philo_list[i].last_meal = get_current_time();
 			env->philo_list[i].start_time = env->start_time;
 			failed_philo = pthread_create(&env->philo_list[i].p_tid, NULL,
-					philo_life_cycle, (void *)&env->philo_list[i]);
-			if (failed_philo && --i)
+				philo_life_cycle, (void *)&env->philo_list[i]);
+			if (failed_philo)
 			{
+				terminate_philo_threads(env);
 				error_handler(ERR_THREAD);
-				env->end_simulation = true;
 				break ;
 			}
 		}

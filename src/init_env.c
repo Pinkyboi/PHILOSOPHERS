@@ -35,8 +35,6 @@ static short	init_philosophers(t_env *env)
 		env->philo_list[i].print_mutex = &env->print_mutex;
 		env->philo_list[i].end_thread = false;
 		env->philo_list[i].eat_count = 0;
-		env->philo_list[i].last_meal = 0;
-		env->philo_list[i].start_time = 0;
 	}
 	return (0);
 }
