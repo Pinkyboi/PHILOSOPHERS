@@ -93,6 +93,7 @@ void	setting_dinner(t_env *env)
 			env->philo_list[i].start_time = env->start_time;
 			failed_philo = pthread_create(&env->philo_list[i].p_tid, NULL,
 				philo_life_cycle, (void *)&env->philo_list[i]);
+			// pthread_detach(env->philo_list[i].p_tid);
 			if (failed_philo)
 			{
 				terminate_philo_threads(env);
@@ -100,7 +101,7 @@ void	setting_dinner(t_env *env)
 				break ;
 			}
 		}
-		while (i--)
+		while(i--)
 			pthread_join(env->philo_list[i].p_tid, NULL);
 		pthread_join(env->w_tid, NULL);
 	}

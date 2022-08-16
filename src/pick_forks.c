@@ -38,7 +38,7 @@ static void	attribute_fork(t_philo *philo, t_fork *fork)
 		VALID_PRINT_SIG);
 }
 
-static short	execute_philo(t_philo *philo)
+static int	execute_philo(t_philo *philo)
 {
 	while (!philo->end_thread)
 		usleep(10);
@@ -47,24 +47,27 @@ static short	execute_philo(t_philo *philo)
 
 int	get_fork(t_philo *philo)
 {
-	if (philo->small_fork == philo->big_fork)
-		return (execute_philo(philo));
-	pthread_mutex_lock(&philo->small_fork->fork_lock);
-	if(is_fork_available(philo, philo->small_fork))
+	while(!philo->end_thread)
 	{
-		pthread_mutex_lock(&philo->big_fork->fork_lock);
-		if (is_fork_available(philo, philo->big_fork))
+		if (philo->small_fork == philo->big_fork)
+			return (execute_philo(philo));
+		pthread_mutex_lock(&philo->small_fork->fork_lock);
+		if(is_fork_available(philo, philo->small_fork))
 		{
-			attribute_fork(philo, philo->big_fork);
-			attribute_fork(philo, philo->small_fork);
+			pthread_mutex_lock(&philo->big_fork->fork_lock);
+			if (is_fork_available(philo, philo->big_fork))
+			{
+				attribute_fork(philo, philo->big_fork);
+				attribute_fork(philo, philo->small_fork);
+				pthread_mutex_unlock(&philo->big_fork->fork_lock);
+				pthread_mutex_unlock(&philo->small_fork->fork_lock);
+				return (1);
+			}
 			pthread_mutex_unlock(&philo->big_fork->fork_lock);
-			pthread_mutex_unlock(&philo->small_fork->fork_lock);
-			return (1);
 		}
-		pthread_mutex_unlock(&philo->big_fork->fork_lock);
+		pthread_mutex_unlock(&philo->small_fork->fork_lock);
+		wait_turn(philo, philo->small_fork);
+		wait_turn(philo, philo->big_fork);
 	}
-	pthread_mutex_unlock(&philo->small_fork->fork_lock);
-	wait_turn(philo, philo->small_fork);
-	wait_turn(philo, philo->big_fork);
-	return (get_fork(philo));
+	return (0);
 }
