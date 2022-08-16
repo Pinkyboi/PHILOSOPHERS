@@ -47,12 +47,12 @@ static int	execute_philo(t_philo *philo)
 
 int	get_fork(t_philo *philo)
 {
-	while(!philo->end_thread)
+	while (!philo->end_thread)
 	{
 		if (philo->small_fork == philo->big_fork)
 			return (execute_philo(philo));
 		pthread_mutex_lock(&philo->small_fork->fork_lock);
-		if(is_fork_available(philo, philo->small_fork))
+		if (is_fork_available(philo, philo->small_fork))
 		{
 			pthread_mutex_lock(&philo->big_fork->fork_lock);
 			if (is_fork_available(philo, philo->big_fork))

@@ -30,7 +30,6 @@ short	error_handler(short error_code)
 	if (error_code == ERR_MUTEX_DEATH || error_code == ERR_MUTEX_PRINT
 		|| error_code == ERR_MUTEX_FORK)
 		printf("%s\n", "Internal error, please try again.");
-	
 	if (error_code == ERR_NEGATIVE)
 		printf("%s\n", "No passed parameter should be negative.");
 	if (error_code == ERR_ZERO)
