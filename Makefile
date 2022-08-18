@@ -6,14 +6,14 @@
 #    By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/03 21:54:57 by abenaiss          #+#    #+#              #
-#    Updated: 2022/08/15 20:01:15 by abenaiss         ###   ########.fr        #
+#    Updated: 2022/08/18 18:20:23 by abenaiss         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 CC = gcc
-CFLAGS = #-Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 INC_DIR =./inc/
 SRC_DIR =./src/
@@ -32,24 +32,22 @@ FILES_NAME =	clean_forks.c\
 				error_handle.c\
 				time_management.c
 
-HEADER_NAME = philo.h\
-
-OBJS = $(addprefix $(OBJ_DIR), $(FILES_NAME:.c=.o))
 SRCS = $(addprefix $(SRC_DIR), $(FILES_NAME))
-HDRS = $(addprefix $(INC_DIR), $(HEADER_NAME))
+OBJS = $(addprefix $(OBJ_DIR), $(FILES_NAME:.c=.o))
 
 DIR_CREATE = @mkdir -p $(OBJ_DIR)
 
+.PHONY: all clean fclean re
+
 all: $(NAME)
+
 $(NAME) : $(HDRS) $(OBJS)
 	@$(CC) $(OBJS) -o $@
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c
-	$(DIR_CREATE)
-	@$(CC) $(CFLAGS) -c $< -o $@ -I $(INC_DIR)
+	@$(DIR_CREATE)
+	@$(CC) $(CFLAGS) -c $^ -o $@ -I $(INC_DIR)
 
-$(OBJ_DIR) :
-	@mkdir $(OBJ_DIR)
 clean:
 	@rm -rf $(OBJ_DIR)
 fclean: clean

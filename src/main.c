@@ -6,7 +6,7 @@
 /*   By: abenaiss <abenaiss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 22:02:07 by abenaiss          #+#    #+#             */
-/*   Updated: 2021/12/04 14:49:43 by abenaiss         ###   ########.fr       */
+/*   Updated: 2022/08/18 18:11:25 by abenaiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static void	clear_env(t_env *env, short err_code)
 				pthread_mutex_destroy(&env->philo_list[i].death_mutex);
 		free(env->philo_list);
 	}
+	free(env);
 }
 
 int	main(int argc, char **argv)
